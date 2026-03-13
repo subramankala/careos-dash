@@ -14,6 +14,7 @@ def test_create_and_decode_token_round_trip() -> None:
         actor_id="caregiver_999",
         role="caregiver",
         allowed_view="caregiver_dashboard",
+        authorization_version=3,
     )
     claims = decode_view_token(token)
     assert claims.patient_id == "patient_123"
@@ -27,6 +28,7 @@ def test_expired_token_rejected() -> None:
         actor_id="caregiver_999",
         role="caregiver",
         allowed_view="caregiver_dashboard",
+        authorization_version=3,
         expires_in_seconds=1,
     )
     time.sleep(2)

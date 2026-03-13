@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from datetime import UTC, datetime, timedelta
 
-from app.models import CareEvent, Escalation, Medication, Patient, TaskCriticality
+from app.models import AuthorizationGrant, CareEvent, Escalation, Medication, Patient, TaskCriticality
 
 NOW = datetime(2026, 3, 13, 9, 30, tzinfo=UTC)
 
@@ -16,6 +16,11 @@ PATIENTS = {
         primary_conditions=["Coronary artery disease", "Type 2 diabetes", "Hypertension"],
         care_plan_name="Post-discharge cardiac recovery",
         last_check_in_at=NOW - timedelta(hours=2),
+        timezone="Asia/Kolkata",
+        primary_language="en",
+        persona_type="caregiver_managed_elder",
+        risk_level="medium",
+        status="active",
     )
 }
 
@@ -63,9 +68,9 @@ CARE_EVENTS = {
 }
 
 TASK_CRITICALITY = [
-    TaskCriticality("Medication reminder", "non_negotiable", "Non-negotiable"),
-    TaskCriticality("Symptom check", "flexible", "Flexible"),
-    TaskCriticality("Walk reminder", "optional", "Optional"),
+    TaskCriticality("Medication reminder", "NON_NEGOTIABLE", "Non-negotiable"),
+    TaskCriticality("Symptom check", "FLEXIBLE_CLINICAL", "Flexible clinical"),
+    TaskCriticality("Walk reminder", "OPTIONAL_LIFESTYLE", "Optional lifestyle"),
 ]
 
 CAREGIVER_MAPPINGS = {
@@ -75,5 +80,50 @@ CAREGIVER_MAPPINGS = {
         "actor_id": "caregiver_999",
         "role": "caregiver",
         "phone_number": "+14085157095",
+    },
+    "+14085157096": {
+        "tenant_id": "tenant_001",
+        "patient_id": "patient_123",
+        "actor_id": "caregiver_556",
+        "role": "caregiver",
+        "phone_number": "+14085157096",
     }
 }
+
+AUTHORIZATION_GRANTS = [
+    AuthorizationGrant(
+        authorization_id="auth_001",
+        tenant_id="tenant_001",
+        patient_id="patient_123",
+        actor_id="caregiver_999",
+        actor_type="caregiver",
+        granted_by="patient_123",
+        scopes=[
+            "view_dashboard",
+            "view_escalations",
+            "view_medications",
+            "view_recent_events",
+            "view_criticality",
+        ],
+        status="active",
+        effective_at=NOW - timedelta(days=10),
+        revoked_at=None,
+        authorization_version=3,
+    ),
+    AuthorizationGrant(
+        authorization_id="auth_002",
+        tenant_id="tenant_001",
+        patient_id="patient_123",
+        actor_id="caregiver_556",
+        actor_type="caregiver",
+        granted_by="patient_123",
+        scopes=[
+            "view_dashboard",
+            "view_criticality",
+        ],
+        status="active",
+        effective_at=NOW - timedelta(days=4),
+        revoked_at=None,
+        authorization_version=1,
+    )
+]

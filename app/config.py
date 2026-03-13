@@ -13,6 +13,12 @@ class Settings(BaseSettings):
     base_url: str = "http://localhost:8000"
     signing_secret: str = "replace-me-with-a-long-random-secret"
     link_expiry_seconds: int = 1800
+    openclaw_name: str = "OpenClaw"
+    use_real_mcp: bool = False
+    mcp_base_url: str = ""
+    mcp_api_key: str = ""
+    mcp_timeout_seconds: float = 5.0
+    mcp_retry_attempts: int = 2
 
 
 settings = Settings()

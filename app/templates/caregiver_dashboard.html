@@ -4,13 +4,39 @@
   <header class="sticky top-0 z-10 rounded-3xl bg-slate-950 px-5 py-4 text-white shadow-lg">
     <p class="text-xs uppercase tracking-[0.3em] text-amber-300">Caregiver Dashboard</p>
     <h1 class="mt-2 text-2xl font-semibold">{{ dashboard.patient.full_name }}</h1>
-    <p class="mt-1 text-sm text-slate-300">{{ dashboard.patient.age }} years · {{ dashboard.patient.sex }}</p>
+    <p class="mt-1 text-sm text-slate-300">
+      {% if dashboard.patient.age is not none %}{{ dashboard.patient.age }} years{% else %}Age unavailable{% endif %}
+      ·
+      {% if dashboard.patient.sex %}{{ dashboard.patient.sex }}{% else %}Sex unavailable{% endif %}
+    </p>
     <p class="mt-3 text-sm text-slate-200">{{ dashboard.patient.care_plan_name }}</p>
-    <p class="mt-1 text-xs text-slate-400">Last check-in {{ dashboard.patient.last_check_in_at.strftime("%d %b %Y %H:%M UTC") }}</p>
+    <div class="mt-3 flex flex-wrap gap-2">
+      <span class="rounded-full bg-amber-300/20 px-3 py-1 text-xs font-semibold text-amber-200">Risk {{ dashboard.patient.risk_level|title }}</span>
+      <span class="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-slate-200">Status {{ dashboard.patient.status|title }}</span>
+    </div>
+    <p class="mt-1 text-xs text-slate-400">
+      Last check-in
+      {% if dashboard.patient.last_check_in_at %}
+      {{ dashboard.patient.last_check_in_at.strftime("%d %b %Y %H:%M UTC") }}
+      {% else %}
+      unavailable
+      {% endif %}
+    </p>
+    <p class="mt-2 text-xs text-slate-400">View issued by OpenClaw · Patient timezone {{ dashboard.patient.timezone }}</p>
   </header>
 
   <section class="mt-4 rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
     <h2 class="text-lg font-semibold">Patient Summary</h2>
+    <div class="mt-3 grid grid-cols-2 gap-3 text-sm text-slate-600">
+      <div class="rounded-2xl bg-stone-50 px-3 py-3">
+        <p class="text-xs uppercase tracking-wide text-slate-400">Language</p>
+        <p class="mt-1 font-medium text-slate-900">{{ dashboard.patient.primary_language|upper }}</p>
+      </div>
+      <div class="rounded-2xl bg-stone-50 px-3 py-3">
+        <p class="text-xs uppercase tracking-wide text-slate-400">Persona</p>
+        <p class="mt-1 font-medium text-slate-900">{{ dashboard.patient.persona_type.replace("_", " ")|title }}</p>
+      </div>
+    </div>
     <p class="mt-3 text-sm text-slate-600">Primary conditions</p>
     <div class="mt-2 flex flex-wrap gap-2">
       {% for condition in dashboard.patient.primary_conditions %}
@@ -24,6 +50,9 @@
       <h2 class="text-lg font-semibold">Active Escalations</h2>
       <span class="rounded-full bg-rose-100 px-3 py-1 text-xs font-semibold text-rose-700">{{ dashboard.escalations|length }} active</span>
     </div>
+    {% if not dashboard.section_visibility.escalations %}
+    <p class="mt-4 text-sm text-slate-500">This caregiver grant does not include escalation visibility.</p>
+    {% endif %}
     <div class="mt-4 space-y-3">
       {% for escalation in dashboard.escalations %}
       <article class="rounded-2xl border border-slate-200 bg-stone-50 p-4">
@@ -46,6 +75,9 @@
     <div class="mt-4 h-3 overflow-hidden rounded-full bg-stone-200">
       <div class="h-full rounded-full bg-emerald-500" style="width: {{ dashboard.adherence.completion_percent }}%"></div>
     </div>
+    {% if not dashboard.section_visibility.medications %}
+    <p class="mt-4 text-sm text-slate-500">Medication visibility is not included in the active caregiver grant.</p>
+    {% endif %}
     <div class="mt-4 grid grid-cols-3 gap-3 text-center">
       <div class="rounded-2xl bg-emerald-50 p-3">
         <p class="text-xs text-slate-500">Taken</p>
@@ -75,6 +107,9 @@
 
   <section class="mt-4 rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
     <h2 class="text-lg font-semibold">Recent Timeline</h2>
+    {% if not dashboard.section_visibility.recent_events %}
+    <p class="mt-4 text-sm text-slate-500">Recent event visibility is not included in the active caregiver grant.</p>
+    {% endif %}
     <div class="mt-4 space-y-3">
       {% for event in dashboard.recent_events %}
       <div class="rounded-2xl border border-slate-200 p-4">
@@ -88,6 +123,9 @@
 
   <section class="mt-4 rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
     <h2 class="text-lg font-semibold">Criticality Legend</h2>
+    {% if not dashboard.section_visibility.criticality_legend %}
+    <p class="mt-4 text-sm text-slate-500">Criticality labels are not visible for this caregiver grant.</p>
+    {% endif %}
     <div class="mt-4 space-y-2">
       {% for item in dashboard.criticality_legend %}
       <div class="flex items-center justify-between rounded-2xl bg-stone-50 px-3 py-3">
@@ -104,6 +142,15 @@
       <button class="rounded-2xl bg-slate-900 px-4 py-3 text-left text-sm font-medium text-white">Call patient</button>
       <button class="rounded-2xl bg-white px-4 py-3 text-left text-sm font-medium text-slate-900 ring-1 ring-slate-300">Message patient</button>
       <button class="rounded-2xl bg-white px-4 py-3 text-left text-sm font-medium text-slate-900 ring-1 ring-slate-300">Notify clinician</button>
+    </div>
+  </section>
+
+  <section class="mt-4 rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+    <h2 class="text-lg font-semibold">Access Scope</h2>
+    <div class="mt-4 flex flex-wrap gap-2">
+      {% for scope in auth_context.scopes %}
+      <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700">{{ scope }}</span>
+      {% endfor %}
     </div>
   </section>
 </main>

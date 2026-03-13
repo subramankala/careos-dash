@@ -13,6 +13,7 @@ class SignedURLService:
         actor_id: str,
         role: str,
         view: str,
+        authorization_version: int,
     ) -> dict:
         token = create_view_token(
             tenant_id=tenant_id,
@@ -20,6 +21,7 @@ class SignedURLService:
             actor_id=actor_id,
             role=role,
             allowed_view=view,
+            authorization_version=authorization_version,
         )
         return {
             "url": f"{settings.base_url}/v/{token}",

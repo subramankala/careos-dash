@@ -9,11 +9,16 @@ class Patient:
     id: str
     tenant_id: str
     full_name: str
-    age: int
-    sex: str
+    age: int | None
+    sex: str | None
     primary_conditions: list[str]
     care_plan_name: str
-    last_check_in_at: datetime
+    last_check_in_at: datetime | None
+    timezone: str
+    primary_language: str
+    persona_type: str
+    risk_level: str
+    status: str
 
 
 @dataclass(frozen=True)
@@ -52,3 +57,18 @@ class TaskCriticality:
     task_type: str
     criticality_level: str
     caregiver_visible_label: str
+
+
+@dataclass(frozen=True)
+class AuthorizationGrant:
+    authorization_id: str
+    tenant_id: str
+    patient_id: str
+    actor_id: str
+    actor_type: str
+    granted_by: str
+    scopes: list[str]
+    status: str
+    effective_at: datetime
+    revoked_at: datetime | None
+    authorization_version: int

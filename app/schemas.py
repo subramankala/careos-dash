@@ -11,6 +11,7 @@ class SignedViewClaims(BaseModel):
     actor_id: str
     role: Literal["caregiver", "patient", "clinician"]
     allowed_view: Literal["caregiver_dashboard"]
+    authorization_version: int
     iat: int
     exp: int
     jti: str
@@ -37,6 +38,25 @@ class CaregiverContext(BaseModel):
     phone_number: str
 
 
+class ViewAccess(BaseModel):
+    tenant_id: str
+    patient_id: str
+    actor_id: str
+    role: Literal["caregiver"]
+    view: Literal["caregiver_dashboard"]
+    authorization_version: int
+    scopes: list[str]
+
+
+class AuthorizationContext(BaseModel):
+    actor_id: str
+    patient_id: str
+    tenant_id: str
+    role: Literal["caregiver"]
+    scopes: list[str]
+    authorization_version: int
+
+
 class DashboardSummary(BaseModel):
     patient: dict
     medications: list[dict]
@@ -44,6 +64,7 @@ class DashboardSummary(BaseModel):
     recent_events: list[dict]
     criticality_legend: list[dict]
     adherence: dict
+    section_visibility: dict[str, bool]
 
 
 class TwilioInboundPayload(BaseModel):

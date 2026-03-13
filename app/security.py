@@ -25,6 +25,7 @@ def create_view_token(
     actor_id: str,
     role: str,
     allowed_view: str,
+    authorization_version: int,
     expires_in_seconds: int | None = None,
 ) -> str:
     now = datetime.now(UTC)
@@ -35,6 +36,7 @@ def create_view_token(
         actor_id=actor_id,
         role=role,
         allowed_view=allowed_view,
+        authorization_version=authorization_version,
         iat=int(now.timestamp()),
         exp=int((now + timedelta(seconds=expiry_seconds)).timestamp()),
         jti=str(uuid4()),
