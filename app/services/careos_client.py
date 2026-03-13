@@ -6,7 +6,10 @@ from data.mock_data import CAREGIVER_MAPPINGS, CARE_EVENTS, ESCALATIONS, MEDICAT
 
 class MockCareOSClient:
     def resolve_caregiver_context(self, phone_number: str) -> CaregiverContext | None:
-        normalized = phone_number.replace("whatsapp:", "").strip()
+        normalized = str(phone_number).replace("whatsapp:", "").strip()
+        normalized = normalized.replace(" ", "")
+        if normalized and not normalized.startswith("+") and normalized[0].isdigit():
+            normalized = f"+{normalized}"
         mapping = CAREGIVER_MAPPINGS.get(normalized)
         if mapping is None:
             return None
