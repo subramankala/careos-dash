@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% if page_title %}{{ page_title }}{% else %}Ginger CareOS Dash{% endif %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="min-h-screen bg-stone-100 text-slate-900">
+    {% if content_only %}
+      {{ content_html | safe }}
+    {% else %}
+      {% block content %}{% endblock %}
+    {% endif %}
+  </body>
+</html>
