@@ -10,6 +10,7 @@ Ginger CareOS Dash is a FastAPI MVP for secure caregiver dashboard links trigger
 - Backend generates a signed, expiring URL
 - Caregiver opens `GET /v/{token}` in a browser
 - Server validates the token and renders a mobile-friendly caregiver dashboard
+- OpenClaw can also request the same signed link through MCP without duplicating URL logic
 
 ## Architecture summary
 
@@ -38,10 +39,12 @@ app/
     url_service.py
     twilio_service.py
     dashboard_service.py
+    mcp_service.py
   routes/
     twilio.py
     views.py
     internal.py
+    mcp.py
   templates/
     base.html
     caregiver_dashboard.html
@@ -76,6 +79,7 @@ Copy `.env.example` to `.env` if you want to override defaults.
 - `GINGER_CAREOS_DASH_BASE_URL`
 - `GINGER_CAREOS_DASH_SIGNING_SECRET`
 - `GINGER_CAREOS_DASH_LINK_EXPIRY_SECONDS`
+- `GINGER_CAREOS_DASH_MCP_API_KEY`
 
 ## Run locally
 
@@ -129,6 +133,40 @@ Example response:
   "url": "http://localhost:8000/v/<token>",
   "expires_in_seconds": 1800
 }
+```
+
+## MCP endpoints
+
+This app also exposes a small MCP-compatible surface so OpenClaw can ask for a caregiver dashboard link without routing Twilio through the dashboard service.
+
+Available tool:
+
+- `dash_generate_caregiver_dashboard`
+
+Arguments:
+
+- Either `phone_number`
+- Or `tenant_id`, `patient_id`, `actor_id`, and optional `role` (`caregiver` only)
+
+List tools:
+
+```bash
+curl -s http://127.0.0.1:8000/mcp/tools \
+  -H "x-mcp-api-key: replace-me-with-a-long-random-api-key"
+```
+
+Call tool:
+
+```bash
+curl -s -X POST http://127.0.0.1:8000/mcp/call \
+  -H "Content-Type: application/json" \
+  -H "x-mcp-api-key: replace-me-with-a-long-random-api-key" \
+  -d '{
+    "tool": "dash_generate_caregiver_dashboard",
+    "arguments": {
+      "phone_number": "+14085157095"
+    }
+  }'
 ```
 
 ## Run tests

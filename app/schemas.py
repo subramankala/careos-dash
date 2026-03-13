@@ -29,6 +29,26 @@ class GenerateViewResponse(BaseModel):
     expires_in_seconds: int
 
 
+class MCPToolDescriptor(BaseModel):
+    name: str
+    description: str
+    write: bool = False
+
+
+class MCPToolsResponse(BaseModel):
+    tools: list[MCPToolDescriptor]
+
+
+class MCPCallRequest(BaseModel):
+    tool: str
+    arguments: dict = Field(default_factory=dict)
+
+
+class MCPCallResponse(BaseModel):
+    ok: bool
+    result: dict
+
+
 class CaregiverContext(BaseModel):
     tenant_id: str
     patient_id: str

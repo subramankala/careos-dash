@@ -13,6 +13,7 @@ class Settings(BaseSettings):
     base_url: str = "http://localhost:8000"
     signing_secret: str = "replace-me-with-a-long-random-secret"
     link_expiry_seconds: int = 1800
+    mcp_api_key: str = ""
 
 
 settings = Settings()
