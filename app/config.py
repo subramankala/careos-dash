@@ -14,6 +14,10 @@ class Settings(BaseSettings):
     signing_secret: str = "replace-me-with-a-long-random-secret"
     link_expiry_seconds: int = 1800
     mcp_api_key: str = ""
+    mcp_timeout_seconds: float = 5.0
+    mcp_retry_attempts: int = 2
+    use_real_careos_api: bool = False
+    careos_api_base_url: str = "http://127.0.0.1:8115"
 
 
 settings = Settings()

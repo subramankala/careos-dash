@@ -77,3 +77,16 @@ CAREGIVER_MAPPINGS = {
         "phone_number": "+14085157095",
     }
 }
+
+NOTIFICATION_SETTINGS = {
+    ("caregiver_999", "patient_123"): {
+        "preset": "primary_caregiver",
+        "notification_preferences": {
+            "due_reminders": True,
+            "critical_alerts": {"channel": "both"},
+            "daily_summary": True,
+            "low_adherence_alerts": True,
+        },
+        "authorization_version": 1,
+    },
+}

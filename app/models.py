@@ -52,3 +52,13 @@ class TaskCriticality:
     task_type: str
     criticality_level: str
     caregiver_visible_label: str
+
+
+@dataclass(frozen=True)
+class NotificationSettings:
+    actor_id: str
+    patient_id: str
+    preset: str
+    channels: dict[str, str]
+    raw_preferences: dict
+    authorization_version: int

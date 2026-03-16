@@ -64,6 +64,7 @@ class DashboardSummary(BaseModel):
     recent_events: list[dict]
     criticality_legend: list[dict]
     adherence: dict
+    notification_settings: dict = Field(default_factory=dict)
 
 
 class TwilioInboundPayload(BaseModel):
@@ -71,3 +72,7 @@ class TwilioInboundPayload(BaseModel):
     To: str = Field(default="")
     Body: str = Field(default="")
     MessageSid: str = Field(default="")
+
+
+class NotificationSettingsUpdateRequest(BaseModel):
+    channels: dict[str, str] = Field(default_factory=dict)
